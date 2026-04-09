@@ -15,36 +15,65 @@ services:
     ports:
       - "6379:6379"
 
-  api:
-    build: ./backend
+  admin-api:
+    build:
+      context: ./backend
+      dockerfile: admin-api/Dockerfile
     ports:
       - "8080:8080"
     environment:
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
+      PORT: "8080"
     depends_on:
       - postgres
       - redis
 
-  celery-primary:
-    build: ./backend
-    command: celery -A halyoontok.background.celery.apps.primary worker -l info -Q primary
+  front-api:
+    build:
+      context: ./backend
+      dockerfile: front-api/Dockerfile
+    ports:
+      - "8081:8081"
     environment:
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
+      MEDIA_BASE_URL: http://media-api:8083
+      PORT: "8081"
     depends_on:
       - postgres
       - redis
 
-  celery-media:
-    build: ./backend
-    command: celery -A halyoontok.background.celery.apps.media worker -l info -Q media
+  upload-api:
+    build:
+      context: ./backend
+      dockerfile: upload-api/Dockerfile
+    ports:
+      - "8082:8082"
     environment:
       POSTGRES_HOST: postgres
       REDIS_HOST: redis
+      STORAGE_BACKEND: local
+      LOCAL_STORAGE_DIR: /storage
+      PORT: "8082"
+    volumes:
+      - media_storage:/storage
     depends_on:
       - postgres
       - redis
+
+  media-api:
+    build:
+      context: ./backend
+      dockerfile: media-api/Dockerfile
+    ports:
+      - "8083:8083"
+    environment:
+      MEDIA_STORAGE_DIR: /storage
+      PORT: "8083"
+    volumes:
+      - media_storage:/storage
 
 volumes:
   postgres_data:
+  media_storage:
