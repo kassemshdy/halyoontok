@@ -26,12 +26,21 @@ const CATEGORY_LABELS: Record<string, string> = {
   character_stories: "قصص",
 };
 
-export function VideoCard({ video }: { video: FeedVideo }) {
+interface VideoCardProps {
+  video: FeedVideo;
+  shouldLoadVideo: boolean;
+  preloadStrategy: "auto" | "metadata" | "none";
+}
+
+export function VideoCard({ video, shouldLoadVideo, preloadStrategy }: VideoCardProps) {
   const videoRef = useRef<HTMLVideoElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
+  const [isBuffering, setIsBuffering] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
 
+  // Auto-play/pause based on visibility
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
@@ -51,7 +60,18 @@ export function VideoCard({ video }: { video: FeedVideo }) {
 
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [shouldLoadVideo]);
+
+  // Cleanup: remove video src when unloaded to free memory
+  useEffect(() => {
+    if (!shouldLoadVideo && videoRef.current) {
+      videoRef.current.pause();
+      videoRef.current.removeAttribute("src");
+      videoRef.current.load();
+      setVideoReady(false);
+      setIsPlaying(false);
+    }
+  }, [shouldLoadVideo]);
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -78,25 +98,49 @@ export function VideoCard({ video }: { video: FeedVideo }) {
       className="relative flex h-screen w-screen snap-start items-center justify-center bg-black"
       onClick={togglePlay}
     >
-      {video.video_url ? (
+      {/* Thumbnail background — always visible until video is ready */}
+      {video.thumbnail_url && (
+        <img
+          src={video.thumbnail_url}
+          alt=""
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+            videoReady && isPlaying ? "opacity-0" : "opacity-100"
+          }`}
+        />
+      )}
+
+      {/* Blurred placeholder behind thumbnail for fast perceived load */}
+      {!video.thumbnail_url && (
+        <div className="absolute inset-0 bg-gray-900" />
+      )}
+
+      {/* Video element — only mounted when within preload range */}
+      {shouldLoadVideo && video.video_url && (
         <video
           ref={videoRef}
           src={video.video_url}
-          poster={video.thumbnail_url || undefined}
-          className="h-full w-full object-cover"
+          className={`absolute inset-0 h-full w-full object-cover transition-opacity duration-300 ${
+            videoReady ? "opacity-100" : "opacity-0"
+          }`}
           loop
           muted={isMuted}
           playsInline
-          preload="metadata"
+          preload={preloadStrategy}
+          onCanPlay={() => setVideoReady(true)}
+          onWaiting={() => setIsBuffering(true)}
+          onPlaying={() => setIsBuffering(false)}
         />
-      ) : (
-        <div className="flex h-full w-full items-center justify-center bg-gray-900">
-          <p className="text-gray-500">No video available</p>
+      )}
+
+      {/* Buffering spinner */}
+      {isBuffering && isPlaying && (
+        <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+          <div className="h-10 w-10 animate-spin rounded-full border-3 border-white border-t-transparent" />
         </div>
       )}
 
       {/* Play/Pause indicator */}
-      {!isPlaying && (
+      {!isPlaying && !isBuffering && (
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
           <div className="rounded-full bg-black/40 p-5">
             <svg className="h-12 w-12 text-white" fill="currentColor" viewBox="0 0 24 24">
@@ -109,7 +153,7 @@ export function VideoCard({ video }: { video: FeedVideo }) {
       {/* Mute button */}
       <button
         onClick={toggleMute}
-        className="absolute right-4 top-4 rounded-full bg-black/40 p-2"
+        className="absolute right-4 top-4 z-10 rounded-full bg-black/40 p-2"
       >
         {isMuted ? (
           <svg className="h-5 w-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +168,7 @@ export function VideoCard({ video }: { video: FeedVideo }) {
       </button>
 
       {/* Bottom overlay: title + category */}
-      <div className="absolute bottom-0 left-0 right-16 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
+      <div className="absolute bottom-0 left-0 right-16 z-10 bg-gradient-to-t from-black/80 to-transparent p-4 pb-8">
         <span className="mb-2 inline-block rounded-full bg-white/20 px-3 py-1 text-xs text-white">
           {CATEGORY_LABELS[video.category] || video.category}
         </span>
