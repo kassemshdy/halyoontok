@@ -7,8 +7,8 @@ from sqlalchemy.orm import Session
 
 from halyoontok.auth.permissions import require_editor
 from halyoontok.db.engine.sql_engine import get_session_dep
-from halyoontok.db.models import TrendSignal, User
-from halyoontok.db.studio import get_trend_signals, create_trend_signal
+from halyoontok.db.models import User
+from halyoontok.services import studio_service
 
 router = APIRouter(prefix="/trends", tags=["trends"])
 
@@ -33,21 +33,14 @@ class TrendSignalRead(BaseModel):
 
 @router.get("/signals")
 def list_signals(
-    limit: int = 50,
-    offset: int = 0,
-    user: User = Depends(require_editor),
-    session: Session = Depends(get_session_dep),
+    limit: int = 50, offset: int = 0,
+    user: User = Depends(require_editor), session: Session = Depends(get_session_dep),
 ) -> list[TrendSignalRead]:
-    signals = get_trend_signals(session, limit, offset)
-    return [TrendSignalRead.model_validate(s) for s in signals]
+    return [TrendSignalRead.model_validate(s) for s in studio_service.list_trend_signals(session, limit, offset)]
 
 
 @router.post("/signals")
 def create_signal(
-    body: TrendSignalCreate,
-    user: User = Depends(require_editor),
-    session: Session = Depends(get_session_dep),
+    body: TrendSignalCreate, user: User = Depends(require_editor), session: Session = Depends(get_session_dep),
 ) -> TrendSignalRead:
-    signal = TrendSignal(**body.model_dump())
-    result = create_trend_signal(session, signal)
-    return TrendSignalRead.model_validate(result)
+    return TrendSignalRead.model_validate(studio_service.create_trend_signal(session, **body.model_dump()))

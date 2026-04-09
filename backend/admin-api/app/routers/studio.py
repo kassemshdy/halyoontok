@@ -6,12 +6,10 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from halyoontok.auth.permissions import require_editor
-from halyoontok.configs.constants import ContentCategory, ContentStatus, SourceType
+from halyoontok.configs.constants import ContentCategory, ContentStatus
 from halyoontok.db.engine.sql_engine import get_session_dep
-from halyoontok.db.models import ContentIdea, User, Video
-from halyoontok.db.studio import get_content_ideas
-from halyoontok.error_handling.error_codes import HalyoonErrorCode
-from halyoontok.error_handling.exceptions import HalyoonError
+from halyoontok.db.models import User
+from halyoontok.services import studio_service
 
 router = APIRouter(prefix="/studio", tags=["studio"])
 
@@ -39,63 +37,31 @@ class StatusUpdate(BaseModel):
 
 @router.get("/ideas")
 def list_ideas(
-    limit: int = 50,
-    offset: int = 0,
-    user: User = Depends(require_editor),
-    session: Session = Depends(get_session_dep),
+    limit: int = 50, offset: int = 0,
+    user: User = Depends(require_editor), session: Session = Depends(get_session_dep),
 ) -> list[IdeaRead]:
-    ideas = get_content_ideas(session, limit, offset)
-    return [IdeaRead.model_validate(i) for i in ideas]
+    return [IdeaRead.model_validate(i) for i in studio_service.list_ideas(session, limit, offset)]
 
 
 @router.post("/ideas")
 def create_idea(
-    body: IdeaCreate,
-    user: User = Depends(require_editor),
-    session: Session = Depends(get_session_dep),
+    body: IdeaCreate, user: User = Depends(require_editor), session: Session = Depends(get_session_dep),
 ) -> IdeaRead:
-    idea = ContentIdea(**body.model_dump())
-    session.add(idea)
-    session.flush()
-    return IdeaRead.model_validate(idea)
+    return IdeaRead.model_validate(studio_service.create_idea(session, **body.model_dump()))
 
 
 @router.patch("/ideas/{idea_id}/status")
 def update_idea_status(
-    idea_id: int,
-    body: StatusUpdate,
-    user: User = Depends(require_editor),
-    session: Session = Depends(get_session_dep),
+    idea_id: int, body: StatusUpdate,
+    user: User = Depends(require_editor), session: Session = Depends(get_session_dep),
 ) -> dict:
-    idea = session.get(ContentIdea, idea_id)
-    if not idea:
-        raise HalyoonError(HalyoonErrorCode.NOT_FOUND, "Idea not found")
-    idea.status = body.status
-    session.flush()
+    idea = studio_service.update_idea_status(session, idea_id, body.status)
     return {"id": idea.id, "status": idea.status.value}
 
 
 @router.post("/ideas/{idea_id}/to-video")
-def convert_idea_to_video(
-    idea_id: int,
-    user: User = Depends(require_editor),
-    session: Session = Depends(get_session_dep),
+def convert_to_video(
+    idea_id: int, user: User = Depends(require_editor), session: Session = Depends(get_session_dep),
 ) -> dict:
-    idea = session.get(ContentIdea, idea_id)
-    if not idea:
-        raise HalyoonError(HalyoonErrorCode.NOT_FOUND, "Idea not found")
-
-    video = Video(
-        title=idea.title,
-        description=idea.description,
-        status=ContentStatus.DRAFT,
-        category=idea.category or ContentCategory.HUMOR,
-        source_type=SourceType.STUDIO_PRODUCED,
-    )
-    session.add(video)
-    session.flush()
-
-    idea.status = ContentStatus.APPROVED
-    session.flush()
-
+    video, idea = studio_service.convert_idea_to_video(session, idea_id)
     return {"video_id": video.id, "idea_id": idea.id}

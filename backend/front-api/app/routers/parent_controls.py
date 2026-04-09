@@ -7,9 +7,8 @@ from sqlalchemy.orm import Session
 
 from halyoontok.auth.users import current_user
 from halyoontok.db.engine.sql_engine import get_session_dep
-from halyoontok.db.models import ParentalRule, User
-from halyoontok.error_handling.error_codes import HalyoonErrorCode
-from halyoontok.error_handling.exceptions import HalyoonError
+from halyoontok.db.models import User
+from halyoontok.services import profile_service
 
 router = APIRouter(prefix="/parent-controls", tags=["parent-controls"])
 
@@ -37,28 +36,16 @@ class ParentalRuleRead(BaseModel):
 
 @router.get("/{child_id}")
 def get_rules(
-    child_id: int,
-    user: User = Depends(current_user),
-    session: Session = Depends(get_session_dep),
+    child_id: int, user: User = Depends(current_user), session: Session = Depends(get_session_dep),
 ) -> ParentalRuleRead:
-    rule = session.query(ParentalRule).filter(ParentalRule.child_profile_id == child_id).first()
-    if not rule:
-        raise HalyoonError(HalyoonErrorCode.NOT_FOUND, "No rules for this child")
-    return ParentalRuleRead.model_validate(rule)
+    return ParentalRuleRead.model_validate(profile_service.get_parental_rules(session, child_id))
 
 
 @router.put("/{child_id}")
 def update_rules(
-    child_id: int,
-    body: ParentalRuleUpdate,
-    user: User = Depends(current_user),
-    session: Session = Depends(get_session_dep),
+    child_id: int, body: ParentalRuleUpdate,
+    user: User = Depends(current_user), session: Session = Depends(get_session_dep),
 ) -> ParentalRuleRead:
-    rule = session.query(ParentalRule).filter(ParentalRule.child_profile_id == child_id).first()
-    if not rule:
-        rule = ParentalRule(child_profile_id=child_id)
-        session.add(rule)
-    for field, value in body.model_dump(exclude_unset=True).items():
-        setattr(rule, field, value)
-    session.flush()
-    return ParentalRuleRead.model_validate(rule)
+    return ParentalRuleRead.model_validate(
+        profile_service.update_parental_rules(session, child_id, **body.model_dump(exclude_unset=True))
+    )

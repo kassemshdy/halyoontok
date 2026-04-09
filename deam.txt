@@ -1,0 +1,17 @@
+halyoon is social treding data driven automatic viral video generation based on style and category to achive viral social media channels
+
+first use case for this tool will be the child Safe video feed app (tfole)
+
+
+will collect influencers, in mena and get there videos and will have a big library for classified channels accroos social media (youtube shorts, insta reels, tiktok)
+
+Halyoon is a social-trending, data-driven platform for automatic viral video generation. It analyzes content styles, categories, and performance patterns to create videos optimized for high engagement and growth across social media channels.
+
+The first use case for Halyoon will be Tfole, a child-safe short-video feed app.
+
+Halyoon will collect and organize influencer content across the MENA region, building a large classified library of channels and videos from platforms such as YouTube Shorts, Instagram Reels, and TikTok. This library will be used to understand trends, content styles, and viral patterns, then power automated generation of new videos by style, category, and audience fit.
+
+
+Halyoon’s main service is to help any person build a strong social media presence and grow successful channels. It uses social-trending data, content classification, and automated video generation to identify what works across categories and styles, then turns those insights into content designed for reach, engagement, and channel growth.
+
+The first use case of this system is Tfole, a child-safe short-video feed app powered by the same trend intelligence and content generation engine.
