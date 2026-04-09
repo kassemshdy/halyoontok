@@ -2,7 +2,7 @@
 name = "halyoontok"
 version = "0.1.0"
 description = "Child-safe Arabic-first short-video platform"
-requires-python = ">=3.12"
+requires-python = ">=3.9"
 
 [tool.ruff]
 line-length = 88

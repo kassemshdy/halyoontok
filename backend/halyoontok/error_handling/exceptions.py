@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 import logging
 
 from fastapi import FastAPI
@@ -13,8 +15,8 @@ class HalyoonError(Exception):
     def __init__(
         self,
         error_code: HalyoonErrorCode,
-        detail: str | None = None,
-        status_code_override: int | None = None,
+        detail: Optional[str] = None,
+        status_code_override: Optional[int] = None,
     ):
         self.error_code = error_code
         self.detail = detail or error_code.code_string

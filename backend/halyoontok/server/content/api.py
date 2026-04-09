@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 from fastapi import APIRouter
 from fastapi import Depends
 from pydantic import BaseModel
@@ -22,7 +24,7 @@ router = APIRouter(prefix="/content", tags=["content"])
 
 class VideoCreate(BaseModel):
     title: str
-    description: str | None = None
+    description: Optional[str] = None
     category: ContentCategory
     language: Language = Language.ARABIC
     dialect: Dialect = Dialect.MSA
@@ -32,12 +34,12 @@ class VideoCreate(BaseModel):
 class VideoRead(BaseModel):
     id: int
     title: str
-    description: str | None
+    description: Optional[str]
     status: ContentStatus
     category: ContentCategory
     language: Language
     dialect: Dialect
-    duration_seconds: int | None
+    duration_seconds: Optional[int]
 
     model_config = {"from_attributes": True}
 

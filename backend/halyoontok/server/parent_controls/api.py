@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 from fastapi import APIRouter
 from fastapi import Depends
 from pydantic import BaseModel
@@ -14,23 +16,23 @@ router = APIRouter(prefix="/parent-controls", tags=["parent-controls"])
 
 
 class ParentalRuleUpdate(BaseModel):
-    daily_limit_minutes: int | None = None
-    bedtime_start: str | None = None
-    bedtime_end: str | None = None
-    education_priority: int | None = None
-    allowed_categories: dict | None = None
-    language_preferences: dict | None = None
+    daily_limit_minutes: Optional[int] = None
+    bedtime_start: Optional[str] = None
+    bedtime_end: Optional[str] = None
+    education_priority: Optional[int] = None
+    allowed_categories: Optional[dict] = None
+    language_preferences: Optional[dict] = None
 
 
 class ParentalRuleRead(BaseModel):
     id: int
     child_profile_id: int
     daily_limit_minutes: int
-    bedtime_start: str | None
-    bedtime_end: str | None
+    bedtime_start: Optional[str]
+    bedtime_end: Optional[str]
     education_priority: int
-    allowed_categories: dict | None
-    language_preferences: dict | None
+    allowed_categories: Optional[dict]
+    language_preferences: Optional[dict]
 
     model_config = {"from_attributes": True}
 

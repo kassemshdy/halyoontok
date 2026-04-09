@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 from datetime import datetime
 
 from sqlalchemy import Boolean
@@ -39,7 +41,7 @@ class User(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     hashed_password: Mapped[str] = mapped_column(String(255), nullable=False)
-    role: Mapped[UserRole] = mapped_column(SAEnum(UserRole), nullable=False)
+    role: Mapped[UserRole] = mapped_column(SAEnum(UserRole, values_callable=lambda e: [x.value for x in e]), nullable=False)
     is_active: Mapped[bool] = mapped_column(Boolean, default=True)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
@@ -58,18 +60,18 @@ class ChildProfile(Base):
     parent_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
     display_name: Mapped[str] = mapped_column(String(100), nullable=False)
     age: Mapped[int] = mapped_column(Integer, nullable=False)
-    age_band: Mapped[AgeBand] = mapped_column(SAEnum(AgeBand), nullable=False)
+    age_band: Mapped[AgeBand] = mapped_column(SAEnum(AgeBand, values_callable=lambda e: [x.value for x in e]), nullable=False)
     language: Mapped[Language] = mapped_column(
-        SAEnum(Language), default=Language.ARABIC
+        SAEnum(Language, values_callable=lambda e: [x.value for x in e]), default=Language.ARABIC
     )
-    dialect: Mapped[Dialect] = mapped_column(SAEnum(Dialect), default=Dialect.MSA)
+    dialect: Mapped[Dialect] = mapped_column(SAEnum(Dialect, values_callable=lambda e: [x.value for x in e]), default=Dialect.MSA)
     country: Mapped[str] = mapped_column(String(50), default="LB")
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
 
     parent: Mapped["User"] = relationship(back_populates="children")
-    parental_rules: Mapped["ParentalRule | None"] = relationship(
+    parental_rules: Mapped[Optional["ParentalRule"]] = relationship(
         back_populates="child_profile"
     )
     watch_events: Mapped[list["WatchEvent"]] = relationship(
@@ -85,13 +87,13 @@ class ParentalRule(Base):
         ForeignKey("child_profiles.id"), unique=True, nullable=False
     )
     daily_limit_minutes: Mapped[int] = mapped_column(Integer, default=60)
-    bedtime_start: Mapped[str | None] = mapped_column(String(5))  # "21:00"
-    bedtime_end: Mapped[str | None] = mapped_column(String(5))  # "07:00"
+    bedtime_start: Mapped[Optional[str]] = mapped_column(String(5))  # "21:00"
+    bedtime_end: Mapped[Optional[str]] = mapped_column(String(5))  # "07:00"
     education_priority: Mapped[int] = mapped_column(
         Integer, default=5
     )  # 1-10 slider
-    allowed_categories: Mapped[dict | None] = mapped_column(JSON)
-    language_preferences: Mapped[dict | None] = mapped_column(JSON)
+    allowed_categories: Mapped[Optional[dict]] = mapped_column(JSON)
+    language_preferences: Mapped[Optional[dict]] = mapped_column(JSON)
 
     child_profile: Mapped["ChildProfile"] = relationship(
         back_populates="parental_rules"
@@ -106,30 +108,30 @@ class Video(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str | None] = mapped_column(Text)
+    description: Mapped[Optional[str]] = mapped_column(Text)
     status: Mapped[ContentStatus] = mapped_column(
-        SAEnum(ContentStatus), default=ContentStatus.DRAFT
+        SAEnum(ContentStatus, values_callable=lambda e: [x.value for x in e]), default=ContentStatus.DRAFT
     )
     category: Mapped[ContentCategory] = mapped_column(
-        SAEnum(ContentCategory), nullable=False
+        SAEnum(ContentCategory, values_callable=lambda e: [x.value for x in e]), nullable=False
     )
     language: Mapped[Language] = mapped_column(
-        SAEnum(Language), default=Language.ARABIC
+        SAEnum(Language, values_callable=lambda e: [x.value for x in e]), default=Language.ARABIC
     )
-    dialect: Mapped[Dialect] = mapped_column(SAEnum(Dialect), default=Dialect.MSA)
+    dialect: Mapped[Dialect] = mapped_column(SAEnum(Dialect, values_callable=lambda e: [x.value for x in e]), default=Dialect.MSA)
     age_suitability: Mapped[AgeBand] = mapped_column(
-        SAEnum(AgeBand), default=AgeBand.AGE_8_12
+        SAEnum(AgeBand, values_callable=lambda e: [x.value for x in e]), default=AgeBand.AGE_8_12
     )
     source_type: Mapped[SourceType] = mapped_column(
-        SAEnum(SourceType), nullable=False
+        SAEnum(SourceType, values_callable=lambda e: [x.value for x in e]), nullable=False
     )
     educational_score: Mapped[float] = mapped_column(Float, default=0.0)
     entertainment_score: Mapped[float] = mapped_column(Float, default=0.0)
-    duration_seconds: Mapped[int | None] = mapped_column(Integer)
+    duration_seconds: Mapped[Optional[int]] = mapped_column(Integer)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
-    published_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
+    published_at: Mapped[Optional[datetime]] = mapped_column(DateTime(timezone=True))
 
     assets: Mapped[list["VideoAsset"]] = relationship(back_populates="video")
     moderation_decisions: Mapped[list["ModerationDecision"]] = relationship(
@@ -143,7 +145,7 @@ class VideoAsset(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     video_id: Mapped[int] = mapped_column(ForeignKey("videos.id"), nullable=False)
-    asset_type: Mapped[AssetType] = mapped_column(SAEnum(AssetType), nullable=False)
+    asset_type: Mapped[AssetType] = mapped_column(SAEnum(AssetType, values_callable=lambda e: [x.value for x in e]), nullable=False)
     storage_path: Mapped[str] = mapped_column(String(500), nullable=False)
     mime_type: Mapped[str] = mapped_column(String(100), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
@@ -162,12 +164,12 @@ class ModerationDecision(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     video_id: Mapped[int] = mapped_column(ForeignKey("videos.id"), nullable=False)
     status: Mapped[ModerationStatus] = mapped_column(
-        SAEnum(ModerationStatus), nullable=False
+        SAEnum(ModerationStatus, values_callable=lambda e: [x.value for x in e]), nullable=False
     )
-    reason: Mapped[str | None] = mapped_column(Text)
-    confidence: Mapped[float | None] = mapped_column(Float)
-    reviewer_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
-    model_version: Mapped[str | None] = mapped_column(String(50))
+    reason: Mapped[Optional[str]] = mapped_column(Text)
+    confidence: Mapped[Optional[float]] = mapped_column(Float)
+    reviewer_id: Mapped[Optional[int]] = mapped_column(ForeignKey("users.id"))
+    model_version: Mapped[Optional[str]] = mapped_column(String(50))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -184,9 +186,9 @@ class TrendSignal(Base):
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     source: Mapped[str] = mapped_column(String(255), nullable=False)
     topic: Mapped[str] = mapped_column(String(255), nullable=False)
-    format_type: Mapped[str | None] = mapped_column(String(100))
+    format_type: Mapped[Optional[str]] = mapped_column(String(100))
     relevance_score: Mapped[float] = mapped_column(Float, default=0.0)
-    country: Mapped[str | None] = mapped_column(String(50))
+    country: Mapped[Optional[str]] = mapped_column(String(50))
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
@@ -201,15 +203,15 @@ class ContentIdea(Base):
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True, autoincrement=True)
     title: Mapped[str] = mapped_column(String(255), nullable=False)
-    description: Mapped[str | None] = mapped_column(Text)
-    trend_signal_id: Mapped[int | None] = mapped_column(
+    description: Mapped[Optional[str]] = mapped_column(Text)
+    trend_signal_id: Mapped[Optional[int]] = mapped_column(
         ForeignKey("trend_signals.id")
     )
     status: Mapped[ContentStatus] = mapped_column(
-        SAEnum(ContentStatus), default=ContentStatus.DRAFT
+        SAEnum(ContentStatus, values_callable=lambda e: [x.value for x in e]), default=ContentStatus.DRAFT
     )
-    category: Mapped[ContentCategory | None] = mapped_column(SAEnum(ContentCategory))
-    script: Mapped[str | None] = mapped_column(Text)
+    category: Mapped[Optional[ContentCategory]] = mapped_column(SAEnum(ContentCategory, values_callable=lambda e: [x.value for x in e]))
+    script: Mapped[Optional[str]] = mapped_column(Text)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

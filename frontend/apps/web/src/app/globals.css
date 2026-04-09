@@ -6,3 +6,12 @@ html, body {
   height: 100%;
   overflow: hidden;
 }
+
+/* Hide scrollbar for TikTok-style feed */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}

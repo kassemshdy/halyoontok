@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 from fastapi import APIRouter
 from fastapi import Depends
 from pydantic import BaseModel
@@ -18,18 +20,18 @@ router = APIRouter(prefix="/studio", tags=["studio"])
 
 class IdeaCreate(BaseModel):
     title: str
-    description: str | None = None
-    trend_signal_id: int | None = None
+    description: Optional[str] = None
+    trend_signal_id: Optional[int] = None
     category: ContentCategory | None = None
 
 
 class IdeaRead(BaseModel):
     id: int
     title: str
-    description: str | None
+    description: Optional[str]
     status: ContentStatus
     category: ContentCategory | None
-    script: str | None
+    script: Optional[str]
 
     model_config = {"from_attributes": True}
 

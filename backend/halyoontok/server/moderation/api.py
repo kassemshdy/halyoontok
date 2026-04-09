@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 from fastapi import APIRouter
 from fastapi import Depends
 from pydantic import BaseModel
@@ -17,8 +19,8 @@ router = APIRouter(prefix="/moderation", tags=["moderation"])
 class ModerationDecisionCreate(BaseModel):
     video_id: int
     status: ModerationStatus
-    reason: str | None = None
-    confidence: float | None = None
+    reason: Optional[str] = None
+    confidence: Optional[float] = None
 
 
 class VideoQueueItem(BaseModel):

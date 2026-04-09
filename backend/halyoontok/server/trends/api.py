@@ -1,3 +1,5 @@
+from __future__ import annotations
+from typing import Optional
 from fastapi import APIRouter
 from fastapi import Depends
 from pydantic import BaseModel
@@ -16,9 +18,9 @@ class TrendSignalRead(BaseModel):
     id: int
     source: str
     topic: str
-    format_type: str | None
+    format_type: Optional[str]
     relevance_score: float
-    country: str | None
+    country: Optional[str]
 
     model_config = {"from_attributes": True}
 

@@ -1,14 +1,16 @@
+from __future__ import annotations
+from typing import Optional
 from sqlalchemy.orm import Session
 
 from halyoontok.db.models import ChildProfile
 from halyoontok.db.models import User
 
 
-def get_user_by_email(session: Session, email: str) -> User | None:
+def get_user_by_email(session: Session, email: str) -> Optional[User]:
     return session.query(User).filter(User.email == email).first()
 
 
-def get_user_by_id(session: Session, user_id: int) -> User | None:
+def get_user_by_id(session: Session, user_id: int) -> Optional[User]:
     return session.get(User, user_id)
 
 
@@ -28,5 +30,5 @@ def get_child_profiles_by_parent(
     )
 
 
-def get_child_profile_by_id(session: Session, profile_id: int) -> ChildProfile | None:
+def get_child_profile_by_id(session: Session, profile_id: int) -> Optional[ChildProfile]:
     return session.get(ChildProfile, profile_id)
