@@ -1,0 +1,18 @@
+{
+  "expo": {
+    "name": "HalyoonTok",
+    "slug": "halyoontok",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "backgroundColor": "#ffffff"
+    },
+    "ios": {
+      "bundleIdentifier": "com.halyoontok.app"
+    },
+    "android": {
+      "package": "com.halyoontok.app"
+    }
+  }
+}

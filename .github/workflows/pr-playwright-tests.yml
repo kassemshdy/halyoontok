@@ -1,0 +1,113 @@
+name: Playwright E2E Tests
+
+on:
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: playwright-${{ github.head_ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build Docker Images
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build backend image
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          push: false
+          load: true
+          tags: halyoontok-backend:test
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  playwright-tests:
+    name: E2E Tests (${{ matrix.project }})
+    needs: build
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [admin, exclusive]
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: halyoontok
+          POSTGRES_PASSWORD: halyoontok
+          POSTGRES_DB: halyoontok
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend dependencies
+        run: cd frontend && pnpm install
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('frontend/pnpm-lock.yaml') }}
+
+      - name: Install Playwright browsers
+        run: cd frontend/apps/admin && npx playwright install --with-deps chromium
+
+      - name: Set up Python & start backend
+        run: |
+          pip install -r backend/requirements/base.txt
+          cd backend && alembic upgrade head
+          uvicorn halyoontok.main:app --host 0.0.0.0 --port 8080 &
+        env:
+          POSTGRES_HOST: localhost
+          REDIS_HOST: localhost
+
+      - name: Build & start admin
+        run: |
+          cd frontend/apps/admin && pnpm build && pnpm start &
+          sleep 5
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:8080
+
+      - name: Run Playwright tests
+        run: cd frontend/apps/admin && npx playwright test --project ${{ matrix.project }}
+        env:
+          CI: true
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-${{ matrix.project }}-results
+          path: frontend/apps/admin/output/playwright/
+          retention-days: 7
