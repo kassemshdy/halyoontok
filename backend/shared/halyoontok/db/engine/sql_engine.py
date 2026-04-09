@@ -8,16 +8,21 @@ from sqlalchemy.engine import Engine
 from sqlalchemy.orm import Session
 from sqlalchemy.orm import sessionmaker
 
-from halyoontok.configs.app_configs import POSTGRES_DB
-from halyoontok.configs.app_configs import POSTGRES_HOST
-from halyoontok.configs.app_configs import POSTGRES_PASSWORD
-from halyoontok.configs.app_configs import POSTGRES_POOL_OVERFLOW
-from halyoontok.configs.app_configs import POSTGRES_POOL_SIZE
-from halyoontok.configs.app_configs import POSTGRES_PORT
-from halyoontok.configs.app_configs import POSTGRES_USER
+from halyoontok.configs.app_configs import (
+    DATABASE_URL,
+    POSTGRES_DB,
+    POSTGRES_HOST,
+    POSTGRES_PASSWORD,
+    POSTGRES_POOL_OVERFLOW,
+    POSTGRES_POOL_SIZE,
+    POSTGRES_PORT,
+    POSTGRES_USER,
+)
 
 
 def build_connection_string() -> str:
+    if DATABASE_URL:
+        return DATABASE_URL
     return (
         f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
         f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"

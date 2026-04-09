@@ -6,12 +6,17 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 import uvicorn
+from halyoontok.utils.sentry import init_sentry
+
+init_sentry("front-api")
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
 from halyoontok import __version__
 from halyoontok.db.engine.sql_engine import SqlEngine
 from halyoontok.error_handling.exceptions import register_exception_handlers
+from halyoontok.utils.rate_limit import RateLimitMiddleware
 
 from app.routers.feed import router as feed_router
 from app.routers.auth import router as auth_router
@@ -44,6 +49,8 @@ def get_application() -> FastAPI:
         allow_methods=["*"],
         allow_headers=["*"],
     )
+
+    app.add_middleware(RateLimitMiddleware, paths=["/api/auth/login", "/api/auth/register"], max_requests=10, window_seconds=60)
 
     prefix = "/api"
     app.include_router(feed_router, prefix=prefix)

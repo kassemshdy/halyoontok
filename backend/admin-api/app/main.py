@@ -6,6 +6,9 @@ from collections.abc import AsyncGenerator
 from contextlib import asynccontextmanager
 
 import uvicorn
+from halyoontok.utils.sentry import init_sentry
+
+init_sentry("admin-api")
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
