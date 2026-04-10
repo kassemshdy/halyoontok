@@ -5,7 +5,6 @@ import { useAuth, authHeaders } from "@/lib/auth";
 import { useLocale } from "@halyoontok/i18n";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 
 interface Stats {
   total_videos: number; published_videos: number;
@@ -24,10 +23,10 @@ export default function DashboardPage() {
   }, [token]);
 
   const cards = stats ? [
-    { label: t("analytics.total_videos"), value: stats.total_videos },
-    { label: t("analytics.published_videos"), value: stats.published_videos },
-    { label: t("analytics.total_watches"), value: stats.total_watches },
-    { label: t("analytics.watch_time_min"), value: Math.round(stats.total_watch_time_seconds / 60) },
+    { label: t("analytics.total_videos"), value: stats.total_videos ?? 0 },
+    { label: t("analytics.published_videos"), value: stats.published_videos ?? 0 },
+    { label: t("analytics.total_watches"), value: stats.total_watches ?? 0 },
+    { label: t("analytics.watch_time_min"), value: Math.round((stats.total_watch_time_seconds ?? 0) / 60) },
   ] : [];
 
   return (
@@ -50,9 +49,15 @@ export default function DashboardPage() {
 
       <h2 className="mt-8 text-sm font-medium">{t("dashboard.quick_actions")}</h2>
       <div className="mt-3 flex gap-3">
-        <Button variant="outline" asChild><Link href="/content/upload">{t("content.upload")}</Link></Button>
-        <Button variant="outline" asChild><Link href="/moderation">{t("nav.moderation")}</Link></Button>
-        <Button variant="outline" asChild><Link href="/studio">{t("studio.new_idea")}</Link></Button>
+        <Link href="/content/upload" className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+          {t("content.upload")}
+        </Link>
+        <Link href="/moderation" className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+          {t("nav.moderation")}
+        </Link>
+        <Link href="/studio" className="inline-flex h-9 items-center justify-center rounded-md border border-input bg-background px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground">
+          {t("studio.new_idea")}
+        </Link>
       </div>
     </div>
   );

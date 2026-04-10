@@ -33,7 +33,7 @@ export default function ContentPage() {
     const params = new URLSearchParams({ limit: "100" });
     if (statusFilter) params.set("status", statusFilter);
     fetch(`/api/admin/content/videos?${params}`, { headers: authHeaders(token) })
-      .then((r) => r.json()).then(setVideos).catch(() => {});
+      .then((r) => r.json()).then((data) => { if (Array.isArray(data)) setVideos(data); }).catch(() => {});
   }, [token, statusFilter]);
 
   return (
@@ -43,7 +43,9 @@ export default function ContentPage() {
           <h1 className="text-lg font-semibold">{t("content.title")}</h1>
           <p className="text-sm text-muted-foreground">{videos.length} videos</p>
         </div>
-        <Button asChild><Link href="/content/upload">{t("content.upload")}</Link></Button>
+        <Link href="/content/upload" className="inline-flex h-9 items-center justify-center rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+          {t("content.upload")}
+        </Link>
       </div>
 
       <div className="mt-4 flex flex-wrap gap-1.5">
