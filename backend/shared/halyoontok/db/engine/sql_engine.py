@@ -21,6 +21,18 @@ from halyoontok.configs.app_configs import (
 
 
 def build_connection_string() -> str:
+    import os
+    # Use test DB when running in CI or TEST_MODE
+    if os.environ.get("CI") or os.environ.get("TEST_MODE"):
+        test_url = os.environ.get("TEST_DATABASE_URL")
+        if test_url:
+            return test_url
+        # Default test DB: append _test to the configured DB name
+        return (
+            f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}"
+            f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}_test"
+        )
+
     if DATABASE_URL:
         return DATABASE_URL
     return (

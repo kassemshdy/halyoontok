@@ -15,3 +15,77 @@ Halyoon will collect and organize influencer content across the MENA region, bui
 Halyoon’s main service is to help any person build a strong social media presence and grow successful channels. It uses social-trending data, content classification, and automated video generation to identify what works across categories and styles, then turns those insights into content designed for reach, engagement, and channel growth.
 
 The first use case of this system is Tfole, a child-safe short-video feed app powered by the same trend intelligence and content generation engine.
+
+
+Succesfull viral videos equation
+
+1. Data (influencers + viral videos meta + updated data) across channels
+2. Search Engine and reccomendation
+3. AI Agent to generate viral video based on the selected video and prompt and model (Nano banana)
+4. Re fetch chanel data and feed the reccomendation and model parameters
+
+
+
+Here is a cleaner and more structured version:
+
+Successful Viral Videos Equation
+
+1. Data Layer
+
+Collect and continuously update high-quality data across social platforms, including:
+	•	influencers
+	•	viral videos
+	•	channel metadata
+	•	engagement signals
+	•	category and style classification
+	•	trend history
+
+This becomes the foundation for understanding what is working across channels and markets.
+
+2. Search and Recommendation Engine
+
+Build a search and recommendation system that can:
+	•	find the most relevant viral patterns
+	•	surface similar creators, channels, and videos
+	•	classify content by category, style, audience, and format
+	•	recommend the best reference videos to use as input
+
+This layer helps identify the strongest content opportunities.
+
+3. AI Video Generation Agent
+
+Use an AI agent to generate new viral-style videos based on:
+	•	a selected reference video
+	•	a user prompt
+	•	category and style signals
+	•	model selection, such as Nano Banana
+
+The goal is to produce new videos inspired by proven winning patterns while adapting to the target audience and use case.
+
+4. Feedback and Optimization Loop
+
+After generation, re-fetch channel and performance data to improve the system by:
+	•	updating recommendation quality
+	•	refining model parameters
+	•	improving prompt strategies
+	•	learning which styles, categories, and generation settings perform best
+
+This creates a continuous optimization loop where the system becomes smarter over time.
+
+Simple Formula
+
+Successful viral video generation = Data + Search/Recommendation + AI Generation + Feedback Loop
+
+Or in product terms:
+
+Halyoon turns social trend data into a continuous system for discovering, generating, and optimizing viral video content.
+
+I can also turn this into a polished investor slide version or a technical architecture version.
+
+Your concept looks like a fusion of these product classes:
+	•	TrendTok / ViralStat for trend detection
+	•	vidIQ for search, competitive analysis, and growth recommendations
+	•	OpusClip / Captions / InVideo for AI-based short-video generation
+	•	Dash Social / Sprout Social for social listening and feedback loops
+
+    

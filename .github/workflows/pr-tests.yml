@@ -18,13 +18,13 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
-      - name: Install backend dependencies
-        run: pip install -r backend/requirements/dev.txt
+      - name: Install backend
+        run: cd backend && pip install -e shared/ && pip install ruff
 
       - name: Ruff check
-        run: cd backend && ruff check .
+        run: cd backend && ruff check shared/ admin-api/ front-api/ upload-api/ media-api/
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -41,8 +41,8 @@ jobs:
       - name: Lint frontend
         run: cd frontend && pnpm install && pnpm lint
 
-  backend-tests:
-    name: Backend Tests
+  backend-integration-tests:
+    name: Backend Integration Tests
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -74,18 +74,121 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.12"
+          python-version: "3.11"
 
       - name: Install dependencies
-        run: pip install -r backend/requirements/dev.txt
+        run: |
+          cd backend
+          pip install -e shared/
+          pip install fastapi uvicorn python-multipart Pillow aiofiles
+          pip install pytest httpx
 
-      - name: Run migrations
-        run: cd backend && alembic upgrade head
-        env:
-          POSTGRES_HOST: localhost
-
-      - name: Run tests
-        run: cd backend && pytest -xv
+      - name: Run integration tests
+        run: cd backend && pytest tests/integration/ -v --tb=short
         env:
           POSTGRES_HOST: localhost
           REDIS_HOST: localhost
+          TEST_DATABASE_URL: postgresql://halyoontok:halyoontok@localhost:5432/halyoontok_test
+
+  playwright-e2e-tests:
+    name: Playwright E2E Tests
+    needs: backend-integration-tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: halyoontok
+          POSTGRES_PASSWORD: halyoontok
+          POSTGRES_DB: halyoontok
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend & create test DB
+        run: |
+          cd backend
+          pip install -e shared/
+          pip install fastapi uvicorn python-multipart Pillow aiofiles alembic psycopg2-binary
+          # Create test database
+          PGPASSWORD=halyoontok psql -h localhost -U halyoontok -d halyoontok -c "CREATE DATABASE halyoontok_test;" || true
+          # Run migrations against test DB
+          TEST_MODE=true alembic upgrade head
+        env:
+          POSTGRES_HOST: localhost
+          REDIS_HOST: localhost
+          TEST_DATABASE_URL: postgresql://halyoontok:halyoontok@localhost:5432/halyoontok_test
+
+      - name: Start backend services (test DB)
+        run: |
+          cd backend/admin-api && python -m uvicorn app.main:app --host 0.0.0.0 --port 8080 &
+          cd backend/front-api && python -m uvicorn app.main:app --host 0.0.0.0 --port 8081 &
+          sleep 3
+        env:
+          POSTGRES_HOST: localhost
+          REDIS_HOST: localhost
+          TEST_MODE: "true"
+          TEST_DATABASE_URL: postgresql://halyoontok:halyoontok@localhost:5432/halyoontok_test
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Install frontend
+        run: cd frontend && pnpm install
+
+      - name: Build & start admin
+        run: |
+          cd frontend/apps/admin && pnpm build && pnpm start &
+          sleep 5
+        env:
+          NEXT_PUBLIC_ADMIN_API_URL: http://localhost:8080
+          NEXT_PUBLIC_FRONT_API_URL: http://localhost:8081
+          NEXT_PUBLIC_UPLOAD_API_URL: http://localhost:8082
+
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ hashFiles('frontend/pnpm-lock.yaml') }}
+
+      - name: Install Playwright browsers
+        run: cd frontend/apps/admin && pnpm exec playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        run: cd frontend/apps/admin && pnpm exec playwright test --project admin
+        env:
+          CI: true
+          FRONT_API_URL: http://localhost:8081
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-results
+          path: frontend/apps/admin/output/playwright/
+          retention-days: 7

@@ -29,5 +29,13 @@ Thumbs.db
 # Docker volumes
 postgres_data/
 
+# Playwright
+output/playwright/
+*_auth.json
+test-results/
+
+# Old monolith
+_old_monolith/
+
 # Reference repos
 reference/

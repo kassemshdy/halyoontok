@@ -9,10 +9,13 @@ from halyoontok.db.models import Base
 
 config = context.config
 
-# Override sqlalchemy.url with DATABASE_URL env var if set
-database_url = os.environ.get("DATABASE_URL")
-if database_url:
-    config.set_main_option("sqlalchemy.url", database_url)
+# Override sqlalchemy.url: TEST_DATABASE_URL > DATABASE_URL > alembic.ini default
+if os.environ.get("CI") or os.environ.get("TEST_MODE"):
+    test_url = os.environ.get("TEST_DATABASE_URL")
+    if test_url:
+        config.set_main_option("sqlalchemy.url", test_url)
+elif os.environ.get("DATABASE_URL"):
+    config.set_main_option("sqlalchemy.url", os.environ["DATABASE_URL"])
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
