@@ -1,0 +1,237 @@
+Build a modern, premium startup website for a company called **Halyoon**.
+
+## About Halyoon
+Halyoon is a **data-driven social growth engine** that helps people, brands, and media businesses build social presence and grow successful channels. It analyzes viral content patterns across platforms like **TikTok, YouTube Shorts, and Instagram Reels**, classifies channels and influencers, detects trends, and uses AI to generate new videos based on proven styles, categories, prompts, and performance patterns.
+
+Halyoon is not just an AI video generator. It is a full system for:
+- collecting and structuring social trend data,
+- discovering what works,
+- recommending the best viral patterns,
+- generating new content with AI,
+- and continuously improving through feedback loops.
+
+## Key product positioning
+Halyoon’s main service is to allow any person or business to build a strong social media presence and grow successful channels using data, recommendation systems, and AI-generated content.
+
+## Important use case
+**Tfole Kids** is the first use case powered by Halyoon.
+
+Tfole Kids is a **child-safe short-video feed app** that uses Halyoon’s trend intelligence, recommendation engine, and AI content generation system to deliver safe, engaging, educational, and entertaining short videos for children.
+
+## Website goal
+Create a website that presents Halyoon as a serious **AI + media-tech + growth infrastructure** startup. The website should feel:
+- modern
+- premium
+- investor-friendly
+- highly polished
+- trustworthy
+- scalable
+- visually impressive
+
+It should explain that Halyoon is the core engine, while **Tfole Kids** is the first applied product built on top of it.
+
+## Design direction
+- Use a premium dark theme, dark blue or black with bright modern accents
+- Clean typography
+- Strong spacing and hierarchy
+- Smooth gradients
+- Soft glow or glassmorphism effects
+- Subtle motion and animations
+- Responsive design for desktop and mobile
+- High-end AI startup aesthetic
+- Avoid cartoonish style
+- Make it look like a real venture-backed startup homepage
+
+## Tech requirements
+- Use **React**
+- Use **Tailwind CSS**
+- Build a full responsive landing page
+- Use reusable components
+- Keep code clean and component-based
+- Add subtle animations
+- No backend required
+- Single-page site is enough
+- Make it easy to extend later
+
+## Website structure
+
+### 1. Navbar
+Include:
+- Halyoon logo/text
+- Platform
+- Use Cases
+- Features
+- How It Works
+- Contact
+- CTA button: Request Demo
+
+### 2. Hero section
+Headline idea:
+**Turn Social Trends Into Channel Growth**
+
+Subheadline:
+Halyoon is a data-driven social growth engine that analyzes viral content patterns, classifies winning styles, and uses AI to generate videos that help people and brands build successful social media channels.
+
+Make sure the hero also clarifies:
+**Powered by Halyoon: Tfole Kids, the first child-safe short-video use case.**
+
+CTA buttons:
+- Request Demo
+- Explore Platform
+
+Add a premium visual/dashboard on the right showing:
+- trend analytics
+- video cards
+- influencer/channel library
+- AI generation workflow
+- recommendation system
+- feedback loop signals
+
+### 3. Problem section
+Explain the problem clearly:
+Creators, brands, and media businesses struggle to:
+- understand what makes videos go viral
+- track trends across platforms
+- identify winning styles and categories
+- generate content consistently
+- build sustainable channel growth
+
+Then show how Halyoon solves this with data + AI + optimization.
+
+### 4. What Halyoon does
+Show 4 core pillars as elegant cards:
+
+#### Data Layer
+Collects influencer, channel, and viral video data across TikTok, YouTube Shorts, and Instagram Reels.
+
+#### Search & Recommendation Engine
+Finds similar channels, top-performing patterns, categories, formats, and styles most likely to work.
+
+#### AI Video Generation
+Generates new videos based on reference videos, prompts, content style, category, and selected AI models.
+
+#### Feedback Loop
+Re-fetches channel and performance data to continuously improve recommendations, prompt quality, and model parameters.
+
+### 5. How it works
+Create a clear 4-step process:
+1. Collect viral social data
+2. Classify channels, categories, and trends
+3. Generate videos with AI
+4. Optimize through feedback and performance learning
+
+Make this section feel visual and easy to understand.
+
+### 6. Use case section: Tfole Kids
+Create a prominent section specifically titled:
+
+**Tfole Kids — First Use Case Powered by Halyoon**
+
+Explain:
+Tfole Kids is the first application built on Halyoon’s engine. It is a child-safe short-video feed app that uses Halyoon’s data, recommendation, and AI generation capabilities to produce and deliver engaging content for children.
+
+Mention these points:
+- child-safe feed
+- educational and entertaining content
+- no unsafe chaotic social experience
+- Arabic-first and MENA-focused
+- controlled and moderated content generation
+- smart educational injection between fun content
+
+This section should clearly show that **Tfole Kids is a use case built on top of Halyoon**, not the main brand itself.
+
+### 7. Platform features
+Create a feature grid including:
+- Viral Trend Intelligence
+- Cross-Platform Channel Library
+- Influencer Classification
+- Category and Style Analysis
+- AI Prompt-to-Video Workflow
+- Reference-to-Video Generation
+- Recommendation Optimization
+- Feedback-Based Learning Loop
+- Arabic-First / MENA Insights
+- Scalable Content Engine
+
+### 8. Why Halyoon is different
+Position Halyoon against ordinary tools:
+- not just analytics
+- not just social listening
+- not just AI video generation
+- not just creator research
+- it is an integrated operating system for social growth
+
+Use strong and clear product language.
+
+### 9. Audience / who it is for
+Show that Halyoon can serve:
+- creators
+- brands
+- agencies
+- media companies
+- studios
+- vertical products like Tfole Kids
+- content growth teams
+
+### 10. Outcomes / metrics section
+Create elegant stat cards with example business outcomes such as:
+- faster trend discovery
+- scalable channel growth
+- better video ideation
+- AI-assisted production efficiency
+- stronger feedback-driven optimization
+
+Use placeholder numbers if needed.
+
+### 11. Final CTA
+Headline:
+**Build Your Next Social Growth Engine With Halyoon**
+
+Subtext:
+Use Halyoon to discover viral patterns, generate content intelligently, and power new media products like Tfole Kids.
+
+Buttons:
+- Book a Demo
+- Contact Us
+
+### 12. Footer
+Include:
+- Halyoon logo/text
+- Platform
+- Features
+- Use Cases
+- Tfole Kids
+- Contact
+- Social links placeholders
+
+## Branding
+Use **Halyoon** as the main company/product name everywhere.
+Use **Tfole Kids** as the featured first use case.
+Do not present Tfole Kids as the main brand.
+
+## Tagline ideas
+Use one if helpful:
+- The Social Growth Engine
+- Data-Driven Viral Growth
+- AI for Social Channel Success
+- From Trends to Winning Content
+
+## Copy tone
+- clear
+- confident
+- strategic
+- modern
+- investor-friendly
+- premium
+- not exaggerated
+
+## Extra quality requirements
+- Do not make the design generic
+- Make it feel like a polished Series A startup landing page
+- Use strong layout, spacing, typography, and premium visuals
+- Include subtle hover effects and scroll animations
+- Add a polished hero and dashboard-style UI mockup
+- Make each section visually distinct
+- Ensure the relationship between **Halyoon** and **Tfole Kids** is immediately clear
+
+Please generate the full React + Tailwind code for the landing page.
