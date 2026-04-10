@@ -14,21 +14,22 @@ from halyoontok.configs.constants import (
 )
 from halyoontok.db import social_channels, social_videos
 from halyoontok.db.models import CollectionJob, SocialChannel, SocialVideo
-from halyoontok.integrations.base import ChannelData, SocialPlatformClient, VideoData
-from halyoontok.integrations.instagram import InstagramClient
-from halyoontok.integrations.tiktok import TikTokClient
-from halyoontok.integrations.youtube import YouTubeClient
+from halyoontok.integrations.base import SocialPlatformClient
 
 logger = logging.getLogger(__name__)
 
 
 def get_platform_client(platform: SocialPlatform) -> SocialPlatformClient:
-    clients = {
-        SocialPlatform.YOUTUBE: YouTubeClient,
-        SocialPlatform.TIKTOK: TikTokClient,
-        SocialPlatform.INSTAGRAM: InstagramClient,
-    }
-    return clients[platform]()
+    if platform == SocialPlatform.YOUTUBE:
+        from halyoontok.integrations.youtube import YouTubeClient
+        return YouTubeClient()
+    elif platform == SocialPlatform.TIKTOK:
+        from halyoontok.integrations.tiktok import TikTokClient
+        return TikTokClient()
+    elif platform == SocialPlatform.INSTAGRAM:
+        from halyoontok.integrations.instagram import InstagramClient
+        return InstagramClient()
+    raise ValueError(f"Unsupported platform: {platform}")
 
 
 def add_channel(

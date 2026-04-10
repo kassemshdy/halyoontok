@@ -5,12 +5,11 @@ from typing import Optional
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
+from app.routers.social_videos import SocialVideoRead
 from halyoontok.auth.permissions import require_editor
 from halyoontok.configs.constants import ContentCategory, SocialPlatform
 from halyoontok.db.engine.sql_engine import get_session_dep
 from halyoontok.db.models import User
-
-from app.routers.social_videos import SocialVideoRead
 
 router = APIRouter(prefix="/search", tags=["search"])
 

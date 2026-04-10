@@ -150,7 +150,7 @@ export default function GenerationPage() {
                 )}
               </div>
               <div className="flex items-center gap-2">
-                <Badge variant={STATUS_COLORS[job.status] as "default" | "secondary" | "destructive" | "outline" || "outline"}>
+                <Badge variant={(STATUS_COLORS[job.status] || "outline") as "default" | "secondary" | "destructive" | "outline"}>
                   {job.status}
                 </Badge>
                 {job.status === "failed" && (
