@@ -66,6 +66,12 @@ export interface TrendSignal {
   format_type: string | null;
   relevance_score: number;
   country: string | null;
+  auto_detected?: boolean;
+  confidence?: number | null;
+  video_count?: number | null;
+  avg_engagement?: number | null;
+  growth_rate?: number | null;
+  related_video_ids?: number[] | null;
 }
 
 export interface ContentIdea {
@@ -169,6 +175,89 @@ export type AssetType =
   | "thumbnail"
   | "subtitle"
   | "audio";
+
+// ── Social Media Intelligence ──
+
+export type SocialPlatform = "youtube" | "tiktok" | "instagram";
+export type ChannelStatus = "active" | "paused" | "archived";
+export type InfluencerTier = "nano" | "micro" | "mid" | "macro" | "mega";
+export type GenerationStatus = "queued" | "generating" | "post_processing" | "completed" | "failed";
+
+export interface SocialChannel {
+  id: number;
+  platform: SocialPlatform;
+  platform_channel_id: string;
+  name: string;
+  handle: string | null;
+  description: string | null;
+  country: string | null;
+  language: Language | null;
+  dialect: Dialect | null;
+  category: ContentCategory | null;
+  subscriber_count: number | null;
+  avg_views: number | null;
+  avg_engagement_rate: number | null;
+  is_verified: boolean;
+  status: ChannelStatus;
+  last_scraped_at: string | null;
+}
+
+export interface SocialVideo {
+  id: number;
+  channel_id: number;
+  platform: SocialPlatform;
+  platform_video_id: string;
+  title: string;
+  description: string | null;
+  url: string | null;
+  thumbnail_url: string | null;
+  view_count: number;
+  like_count: number;
+  comment_count: number;
+  share_count: number;
+  duration_seconds: number | null;
+  category: ContentCategory | null;
+  engagement_rate: number;
+  virality_score: number;
+  language: Language | null;
+  dialect: Dialect | null;
+  country: string | null;
+  is_short: boolean;
+}
+
+export interface InfluencerProfile {
+  id: number;
+  name: string;
+  country: string | null;
+  language: Language | null;
+  niche: string | null;
+  total_followers: number;
+  avg_engagement_rate: number;
+  tier: InfluencerTier;
+}
+
+export interface GenerationJob {
+  id: number;
+  reference_video_id: number | null;
+  trend_signal_id: number | null;
+  content_idea_id: number | null;
+  prompt: string;
+  model_name: string;
+  status: GenerationStatus;
+  output_video_id: number | null;
+  error_message: string | null;
+}
+
+export interface GenerationTemplate {
+  id: number;
+  name: string;
+  description: string | null;
+  category: ContentCategory | null;
+  base_prompt: string;
+  model_name: string;
+  success_rate: number;
+  avg_engagement_score: number;
+}
 
 // ── Analytics ──
 

@@ -12,6 +12,10 @@ export const en = {
   "nav.trends": "Trends",
   "nav.analytics": "Analytics",
   "nav.parents": "Parents",
+  "nav.channels": "Channels",
+  "nav.library": "Video Library",
+  "nav.search": "Search",
+  "nav.generation": "AI Generation",
 
   // Auth
   "auth.login": "Log In",
