@@ -29,10 +29,7 @@ export default function Navbar() {
             alt="Halyoon Logo"
             className="w-10 h-10 flex-shrink-0 object-contain"
           />
-          <div>
-            <span className="font-bold text-xl tracking-widest leading-none block" style={{ color: "#2A4F88", letterSpacing: "0.12em" }}>HALYOON</span>
-            <span className="text-[9px] uppercase tracking-[0.2em] font-medium leading-none block" style={{ color: "#00FFD4" }}>Growth Engine</span>
-          </div>
+          <span className="font-bold text-xl tracking-widest leading-none" style={{ color: "#2A4F88", letterSpacing: "0.12em" }}>HALYOON</span>
         </a>
 
         <nav className="hidden md:flex items-center gap-8">

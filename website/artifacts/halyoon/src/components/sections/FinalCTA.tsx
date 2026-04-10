@@ -40,8 +40,8 @@ export default function FinalCTA() {
           <div className="flex flex-wrap items-center justify-center gap-4 mb-14">
             <a
               href="#"
-              className="inline-flex items-center gap-2 px-8 py-4 text-sm font-bold text-white transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5 group"
-              style={{ background: "#00FFD4", borderRadius: "50px" }}
+              className="inline-flex items-center gap-2 px-8 py-4 text-sm font-bold transition-all duration-200 hover:opacity-90 hover:-translate-y-0.5 group"
+              style={{ background: "#00FFD4", color: "#1A2E4A", borderRadius: "50px" }}
             >
               <Calendar className="w-5 h-5" />
               Book a Demo

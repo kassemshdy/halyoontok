@@ -77,7 +77,7 @@ export default function Footer() {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 pt-6 border-t border-gray-100">
           <p className="text-xs text-gray-400">
-            2024 Halyoon. All rights reserved.
+            2026 Halyoon. All rights reserved.
           </p>
           <div className="flex items-center gap-5">
             {["Privacy Policy", "Terms of Service", "Cookie Policy"].map((link) => (

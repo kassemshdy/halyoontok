@@ -17,8 +17,8 @@ export default function Hero() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           >
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-8 border text-xs font-semibold uppercase tracking-widest" style={{ borderColor: "#00FFD4", color: "#00FFD4", borderRadius: "2px", background: "rgba(0,188,158,0.06)" }}>
-              <span className="flex h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#00FFD4" }} />
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 mb-8 border text-xs font-semibold uppercase tracking-widest" style={{ borderColor: "#2A4F88", color: "#2A4F88", borderRadius: "2px", background: "rgba(42,79,136,0.08)" }}>
+              <span className="flex h-1.5 w-1.5 rounded-full animate-pulse" style={{ background: "#00BC9E" }} />
               Tfole Kids — First Use Case Powered by Halyoon
             </div>
 
