@@ -40,3 +40,24 @@ R2_ACCESS_KEY_ID = os.environ.get("R2_ACCESS_KEY_ID", "")
 R2_SECRET_ACCESS_KEY = os.environ.get("R2_SECRET_ACCESS_KEY", "")
 R2_BUCKET_NAME = os.environ.get("R2_BUCKET_NAME", "halyoontok-media")
 R2_PUBLIC_URL = os.environ.get("R2_PUBLIC_URL", "")
+
+# Celery
+def _build_redis_url() -> str:
+    if REDIS_URL:
+        return REDIS_URL
+    pwd = f":{REDIS_PASSWORD}@" if REDIS_PASSWORD else ""
+    return f"redis://{pwd}{REDIS_HOST}:{REDIS_PORT}/{REDIS_DB}"
+
+CELERY_BROKER_URL = os.environ.get("CELERY_BROKER_URL", "") or _build_redis_url()
+CELERY_RESULT_BACKEND = os.environ.get("CELERY_RESULT_BACKEND", "") or _build_redis_url()
+
+# Social media API keys
+YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY", "")
+TIKTOK_API_KEY = os.environ.get("TIKTOK_API_KEY", "")
+INSTAGRAM_ACCESS_TOKEN = os.environ.get("INSTAGRAM_ACCESS_TOKEN", "")
+DATA_COLLECTION_INTERVAL_HOURS = int(os.environ.get("DATA_COLLECTION_INTERVAL_HOURS", "6"))
+
+# AI generation
+AI_GENERATION_API_URL = os.environ.get("AI_GENERATION_API_URL", "")
+AI_GENERATION_API_KEY = os.environ.get("AI_GENERATION_API_KEY", "")
+DEFAULT_GENERATION_MODEL = os.environ.get("DEFAULT_GENERATION_MODEL", "nano_banana")

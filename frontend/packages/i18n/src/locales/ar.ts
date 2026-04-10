@@ -12,6 +12,10 @@ export const ar = {
   "nav.trends": "الترندات",
   "nav.analytics": "التحليلات",
   "nav.parents": "أولياء الأمور",
+  "nav.channels": "القنوات",
+  "nav.library": "مكتبة الفيديو",
+  "nav.search": "البحث",
+  "nav.generation": "توليد بالذكاء",
 
   // Auth
   "auth.login": "تسجيل الدخول",

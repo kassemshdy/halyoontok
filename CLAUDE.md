@@ -77,8 +77,11 @@ backend/
 │   ├── configs/                # App configs, constants, enums
 │   ├── error_handling/         # HalyoonError + error codes
 │   ├── storage/                # StorageBackend interface (LocalStorage + R2Storage)
+│   ├── integrations/           # Social media + AI generation API clients
+│   ├── background/             # Celery app + async tasks
+│   ├── services/               # Business logic services
 │   └── utils/                  # Logger, helpers
-├── admin-api/app/              # Routers: content, moderation, studio, analytics, trends, users
+├── admin-api/app/              # Routers: content, moderation, studio, analytics, trends, users, channels, social_videos, search, generation
 ├── front-api/app/              # Routers: feed, auth, profiles, interactions, parent_controls
 ├── upload-api/app/             # Routers: upload (video + image), resize module
 ├── media-api/app/              # Routers: serve (videos, thumbnails, images)
@@ -117,6 +120,12 @@ frontend/
 - **Video** → content with status workflow, category, educational/entertainment scores
 - **VideoAsset** → stored media files (video, HLS, thumbnails, subtitles, audio)
 - **ModerationDecision** → safety classification per video
+- **SocialChannel** → tracked channels across YouTube, TikTok, Instagram
+- **SocialVideo** → collected video metadata with engagement metrics and virality scores
+- **InfluencerProfile** → MENA influencer profiles linked to channels
+- **CollectionJob** → async data collection job tracking
+- **GenerationJob** → AI video generation job with prompt, model, and status
+- **GenerationTemplate** → reusable prompt templates for generation
 - **TrendSignal** → ingested trend data from approved sources
 - **ContentIdea** → production-ready concepts linked to trends
 - **WatchEvent** → engagement tracking per child per video

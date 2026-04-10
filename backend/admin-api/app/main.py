@@ -22,6 +22,10 @@ from app.routers.studio import router as studio_router
 from app.routers.analytics import router as analytics_router
 from app.routers.trends import router as trends_router
 from app.routers.users import router as users_router
+from app.routers.channels import router as channels_router
+from app.routers.social_videos import router as social_videos_router
+from app.routers.search import router as search_router
+from app.routers.generation import router as generation_router
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +58,10 @@ def get_application() -> FastAPI:
     app.include_router(analytics_router, prefix=prefix)
     app.include_router(trends_router, prefix=prefix)
     app.include_router(users_router, prefix=prefix)
+    app.include_router(channels_router, prefix=prefix)
+    app.include_router(social_videos_router, prefix=prefix)
+    app.include_router(search_router, prefix=prefix)
+    app.include_router(generation_router, prefix=prefix)
 
     @app.get("/health")
     def health():

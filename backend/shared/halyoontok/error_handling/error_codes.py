@@ -18,6 +18,9 @@ class HalyoonErrorCode(Enum):
     VIDEO_NOT_FOUND = ("video_not_found", 404)
     MODERATION_REQUIRED = ("moderation_required", 403)
     INVALID_WORKFLOW_TRANSITION = ("invalid_workflow_transition", 400)
+    INVALID_STATE = ("invalid_state", 400)
+    CHANNEL_NOT_FOUND = ("channel_not_found", 404)
+    GENERATION_JOB_NOT_FOUND = ("generation_job_not_found", 404)
 
     @property
     def code_string(self) -> str:

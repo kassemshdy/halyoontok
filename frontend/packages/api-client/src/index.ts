@@ -3,9 +3,14 @@ import type {
   ChildProfile,
   ContentIdea,
   FeedVideo,
+  GenerationJob,
+  GenerationTemplate,
   LoginRequest,
   ModerationDecision,
   ParentalRule,
+  SocialChannel,
+  SocialPlatform,
+  SocialVideo,
   TokenResponse,
   TrendSignal,
   User,
@@ -153,6 +158,82 @@ export class HalyoonApiClient {
       method: "PUT",
       body: JSON.stringify(rules),
     });
+  }
+
+  // ── Channels ──
+
+  async getChannels(params?: { platform?: SocialPlatform; country?: string; limit?: number }): Promise<SocialChannel[]> {
+    const qs = new URLSearchParams();
+    if (params?.platform) qs.set("platform", params.platform);
+    if (params?.country) qs.set("country", params.country);
+    if (params?.limit) qs.set("limit", String(params.limit));
+    return this.fetch(`/channels?${qs}`);
+  }
+
+  async addChannel(channel: { platform: SocialPlatform; platform_channel_id: string; country?: string }): Promise<SocialChannel> {
+    return this.fetch("/channels", { method: "POST", body: JSON.stringify(channel) });
+  }
+
+  async getChannel(id: number): Promise<SocialChannel> {
+    return this.fetch(`/channels/${id}`);
+  }
+
+  async refreshChannel(id: number): Promise<{ status: string }> {
+    return this.fetch(`/channels/${id}/refresh`, { method: "POST" });
+  }
+
+  // ── Social Videos ──
+
+  async getSocialVideos(params?: { platform?: SocialPlatform; country?: string; sort_by?: string; limit?: number }): Promise<SocialVideo[]> {
+    const qs = new URLSearchParams();
+    if (params?.platform) qs.set("platform", params.platform);
+    if (params?.country) qs.set("country", params.country);
+    if (params?.sort_by) qs.set("sort_by", params.sort_by);
+    if (params?.limit) qs.set("limit", String(params.limit));
+    return this.fetch(`/social-videos?${qs}`);
+  }
+
+  async getTopSocialVideos(limit = 20): Promise<SocialVideo[]> {
+    return this.fetch(`/social-videos/top?limit=${limit}`);
+  }
+
+  // ── Search ──
+
+  async searchVideos(query: string, limit = 50): Promise<SocialVideo[]> {
+    return this.fetch(`/search/videos?q=${encodeURIComponent(query)}&limit=${limit}`);
+  }
+
+  async getTrendingPatterns(params?: { country?: string; days?: number }): Promise<Record<string, unknown>[]> {
+    const qs = new URLSearchParams();
+    if (params?.country) qs.set("country", params.country);
+    if (params?.days) qs.set("days", String(params.days));
+    return this.fetch(`/search/trending-patterns?${qs}`);
+  }
+
+  // ── Generation ──
+
+  async createGenerationJob(job: { prompt: string; model_name?: string; reference_video_id?: number }): Promise<GenerationJob> {
+    return this.fetch("/generation/jobs", { method: "POST", body: JSON.stringify(job) });
+  }
+
+  async getGenerationJobs(limit = 50): Promise<GenerationJob[]> {
+    return this.fetch(`/generation/jobs?limit=${limit}`);
+  }
+
+  async getGenerationJob(id: number): Promise<GenerationJob> {
+    return this.fetch(`/generation/jobs/${id}`);
+  }
+
+  async retryGenerationJob(id: number): Promise<GenerationJob> {
+    return this.fetch(`/generation/jobs/${id}/retry`, { method: "POST" });
+  }
+
+  async getGenerationTemplates(limit = 50): Promise<GenerationTemplate[]> {
+    return this.fetch(`/generation/templates?limit=${limit}`);
+  }
+
+  async createGenerationTemplate(template: Partial<GenerationTemplate>): Promise<GenerationTemplate> {
+    return this.fetch("/generation/templates", { method: "POST", body: JSON.stringify(template) });
   }
 
   // ── Analytics ──

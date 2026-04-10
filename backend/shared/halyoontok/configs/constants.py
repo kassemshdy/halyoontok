@@ -68,3 +68,50 @@ class AssetType(str, Enum):
     THUMBNAIL = "thumbnail"
     SUBTITLE = "subtitle"
     AUDIO = "audio"
+
+
+# ── Social Media Intelligence ──
+
+
+class SocialPlatform(str, Enum):
+    YOUTUBE = "youtube"
+    TIKTOK = "tiktok"
+    INSTAGRAM = "instagram"
+
+
+class ChannelStatus(str, Enum):
+    ACTIVE = "active"
+    PAUSED = "paused"
+    ARCHIVED = "archived"
+
+
+class InfluencerTier(str, Enum):
+    NANO = "nano"
+    MICRO = "micro"
+    MID = "mid"
+    MACRO = "macro"
+    MEGA = "mega"
+
+
+class CollectionJobType(str, Enum):
+    CHANNEL_DISCOVERY = "channel_discovery"
+    VIDEO_FETCH = "video_fetch"
+    METRICS_UPDATE = "metrics_update"
+
+
+class CollectionJobStatus(str, Enum):
+    PENDING = "pending"
+    RUNNING = "running"
+    COMPLETED = "completed"
+    FAILED = "failed"
+
+
+# ── AI Generation ──
+
+
+class GenerationStatus(str, Enum):
+    QUEUED = "queued"
+    GENERATING = "generating"
+    POST_PROCESSING = "post_processing"
+    COMPLETED = "completed"
+    FAILED = "failed"
