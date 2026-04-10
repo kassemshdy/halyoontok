@@ -37,15 +37,16 @@ export function Sidebar() {
         {NAV_ITEMS.map((item) => {
           const active = pathname === item.href || (item.href !== "/" && pathname.startsWith(item.href));
           return (
-            <Button
+            <Link
               key={item.href}
-              variant="ghost"
-              size="sm"
-              className={cn("w-full justify-start", active && "bg-accent font-medium")}
-              asChild
+              href={item.href}
+              className={cn(
+                "flex h-8 w-full items-center rounded-md px-3 text-sm transition-colors hover:bg-accent hover:text-accent-foreground",
+                active && "bg-accent font-medium"
+              )}
             >
-              <Link href={item.href}>{t(item.labelKey)}</Link>
-            </Button>
+              {t(item.labelKey)}
+            </Link>
           );
         })}
       </nav>

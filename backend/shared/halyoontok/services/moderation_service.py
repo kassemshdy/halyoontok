@@ -1,19 +1,38 @@
 from __future__ import annotations
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, selectinload
 
-from halyoontok.configs.constants import ContentStatus, ModerationStatus
+from halyoontok.configs.constants import AssetType, ContentStatus, ModerationStatus
 from halyoontok.db.models import ModerationDecision, Video
 
 
-def get_moderation_queue(session: Session, limit: int = 50) -> list[Video]:
-    return (
+def get_moderation_queue(session: Session, limit: int = 50) -> list[dict]:
+    videos = (
         session.query(Video)
         .filter(Video.status == ContentStatus.AWAITING_MODERATION)
+        .options(selectinload(Video.assets))
         .order_by(Video.created_at.asc())
         .limit(limit)
         .all()
     )
+    result = []
+    for v in videos:
+        video_url = None
+        thumbnail_url = None
+        for asset in v.assets:
+            if asset.asset_type in (AssetType.VIDEO_RAW, AssetType.VIDEO_HLS):
+                video_url = asset.storage_path
+            elif asset.asset_type == AssetType.THUMBNAIL:
+                thumbnail_url = asset.storage_path
+        result.append({
+            "id": v.id,
+            "title": v.title,
+            "status": v.status.value if hasattr(v.status, "value") else v.status,
+            "category": v.category.value if hasattr(v.category, "value") else v.category,
+            "video_url": video_url,
+            "thumbnail_url": thumbnail_url,
+        })
+    return result
 
 
 def submit_moderation_decision(

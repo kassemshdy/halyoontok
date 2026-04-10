@@ -17,7 +17,7 @@ export default function TrendsPage() {
   const [showForm, setShowForm] = useState(false);
   const [source, setSource] = useState(""); const [topic, setTopic] = useState(""); const [country, setCountry] = useState("LB");
 
-  const fetchSignals = () => { if (!token) return; fetch("/api/admin/trends/signals", { headers: authHeaders(token) }).then((r) => r.json()).then(setSignals).catch(() => {}); };
+  const fetchSignals = () => { if (!token) return; fetch("/api/admin/trends/signals", { headers: authHeaders(token) }).then((r) => r.json()).then((data) => { if (Array.isArray(data)) setSignals(data); }).catch(() => {}); };
   useEffect(() => { fetchSignals(); }, [token]);
 
   const createSignal = async (e: React.FormEvent) => {

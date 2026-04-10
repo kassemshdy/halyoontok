@@ -23,7 +23,18 @@ const STATUS_KEYS: Record<string, TranslationKey> = {
   scheduled: "status.scheduled", ai_generated: "status.ai_generated", awaiting_editor: "status.awaiting_editor",
 };
 
-interface Video { id: number; title: string; description: string | null; status: string; category: string; language: string; dialect: string; duration_seconds: number | null; }
+interface Video {
+  id: number;
+  title: string;
+  description: string | null;
+  status: string;
+  category: string;
+  language: string;
+  dialect: string;
+  duration_seconds: number | null;
+  video_url: string | null;
+  thumbnail_url: string | null;
+}
 
 export default function VideoDetailPage() {
   const { id } = useParams();
@@ -55,9 +66,49 @@ export default function VideoDetailPage() {
   const actions = STATUS_ACTIONS[video.status] || [];
 
   return (
-    <div className="mx-auto max-w-lg">
+    <div className="mx-auto max-w-2xl">
       <Button variant="ghost" size="sm" onClick={() => router.back()}>← {t("content.back")}</Button>
 
+      {/* Video Preview */}
+      {video.video_url && (
+        <Card className="mt-4">
+          <CardContent className="p-0">
+            <video
+              src={video.video_url}
+              poster={video.thumbnail_url || undefined}
+              controls
+              playsInline
+              className="w-full rounded-t-lg bg-black"
+              style={{ maxHeight: "400px", objectFit: "contain" }}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Thumbnail only (no video) */}
+      {!video.video_url && video.thumbnail_url && (
+        <Card className="mt-4">
+          <CardContent className="p-0">
+            <img
+              src={video.thumbnail_url}
+              alt={video.title}
+              className="w-full rounded-t-lg bg-black object-contain"
+              style={{ maxHeight: "400px" }}
+            />
+          </CardContent>
+        </Card>
+      )}
+
+      {/* No media */}
+      {!video.video_url && !video.thumbnail_url && (
+        <Card className="mt-4">
+          <CardContent className="flex items-center justify-center py-16">
+            <p className="text-sm text-muted-foreground">No video uploaded yet</p>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Video Details */}
       <Card className="mt-4">
         <CardHeader>
           <div className="flex items-start justify-between">

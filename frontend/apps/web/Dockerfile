@@ -15,7 +15,7 @@ RUN pnpm install --frozen-lockfile
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY --from=deps /app/apps/web/node_modules ./apps/web/node_modules 2>/dev/null || true
+RUN cp -r /app/apps/web/node_modules ./apps/web/node_modules 2>/dev/null || true
 COPY frontend/ ./
 RUN pnpm --filter @halyoontok/web build
 
@@ -26,7 +26,8 @@ RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nextjs
 
 COPY --from=builder /app/apps/web/.next/standalone ./
 COPY --from=builder /app/apps/web/.next/static ./apps/web/.next/static
-COPY --from=builder /app/apps/web/public ./apps/web/public 2>/dev/null || true
+RUN mkdir -p ./apps/web/public
+COPY --from=builder /app/apps/web/public/ ./apps/web/public/
 
 USER nextjs
 ENV PORT=3001

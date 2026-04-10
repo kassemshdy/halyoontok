@@ -27,7 +27,7 @@ export default function StudioPage() {
   const [showForm, setShowForm] = useState(false);
   const [title, setTitle] = useState(""); const [description, setDescription] = useState(""); const [category, setCategory] = useState("");
 
-  const fetchIdeas = () => { if (!token) return; fetch("/api/admin/studio/ideas", { headers: authHeaders(token) }).then((r) => r.json()).then(setIdeas).catch(() => {}); };
+  const fetchIdeas = () => { if (!token) return; fetch("/api/admin/studio/ideas", { headers: authHeaders(token) }).then((r) => r.json()).then((data) => { if (Array.isArray(data)) setIdeas(data); }).catch(() => {}); };
   useEffect(() => { fetchIdeas(); }, [token]);
 
   const createIdea = async (e: React.FormEvent) => {

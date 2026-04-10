@@ -17,11 +17,11 @@ export default function AnalyticsPage() {
   if (!stats) return <div className="flex items-center justify-center py-20"><div className="h-6 w-6 animate-spin rounded-full border-2 border-foreground border-t-transparent" /></div>;
 
   const cards = [
-    { label: t("analytics.total_videos"), value: stats.total_videos },
-    { label: t("analytics.published_videos"), value: stats.published_videos },
-    { label: t("analytics.total_watches"), value: stats.total_watches },
-    { label: t("analytics.watch_time_min"), value: Math.round(stats.total_watch_time_seconds / 60) },
-    { label: t("analytics.avg_duration"), value: stats.avg_watch_duration_seconds },
+    { label: t("analytics.total_videos"), value: stats.total_videos ?? 0 },
+    { label: t("analytics.published_videos"), value: stats.published_videos ?? 0 },
+    { label: t("analytics.total_watches"), value: stats.total_watches ?? 0 },
+    { label: t("analytics.watch_time_min"), value: Math.round((stats.total_watch_time_seconds ?? 0) / 60) },
+    { label: t("analytics.avg_duration"), value: stats.avg_watch_duration_seconds ?? 0 },
   ];
 
   return (

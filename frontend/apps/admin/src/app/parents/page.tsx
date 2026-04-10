@@ -15,7 +15,7 @@ export default function ParentsPage() {
   const { t } = useLocale();
   const [users, setUsers] = useState<User[]>([]);
 
-  useEffect(() => { if (!token) return; fetch("/api/admin/users", { headers: authHeaders(token) }).then((r) => r.json()).then((data) => setUsers(data.filter((u: User) => u.role === "parent"))).catch(() => {}); }, [token]);
+  useEffect(() => { if (!token) return; fetch("/api/admin/users", { headers: authHeaders(token) }).then((r) => r.json()).then((data) => { if (Array.isArray(data)) setUsers(data.filter((u: User) => u.role === "parent")); }).catch(() => {}); }, [token]);
 
   return (
     <div>
