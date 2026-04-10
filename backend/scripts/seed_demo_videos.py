@@ -5,7 +5,7 @@ import sys
 import os
 from datetime import datetime, timezone
 
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", "shared"))
 
 from halyoontok.configs.constants import (
     AssetType,

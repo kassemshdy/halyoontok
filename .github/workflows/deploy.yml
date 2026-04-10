@@ -1,0 +1,111 @@
+name: Deploy to Railway
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: halyoontok
+          POSTGRES_PASSWORD: halyoontok
+          POSTGRES_DB: halyoontok
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install backend
+        run: |
+          cd backend
+          pip install -e shared/
+          pip install fastapi uvicorn httpx pytest
+
+      - name: Run migrations
+        run: |
+          cd backend
+          pip install alembic psycopg2-binary
+          alembic upgrade head
+        env:
+          POSTGRES_HOST: localhost
+
+      - name: Test backend imports
+        run: |
+          cd backend/admin-api && python -c "from app.main import app; print('admin-api OK')"
+          cd ../front-api && python -c "from app.main import app; print('front-api OK')"
+          cd ../upload-api && python -c "from app.main import app; print('upload-api OK')"
+          cd ../media-api && python -c "from app.main import app; print('media-api OK')"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: pnpm
+          cache-dependency-path: frontend/pnpm-lock.yaml
+
+      - name: Lint frontend
+        run: cd frontend && pnpm install && pnpm lint
+
+  deploy:
+    name: Deploy
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy admin-api
+        run: railway up --service admin-api
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy front-api
+        run: railway up --service front-api
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy upload-api
+        run: railway up --service upload-api
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy web
+        run: railway up --service web
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+
+      - name: Deploy admin
+        run: railway up --service admin
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
