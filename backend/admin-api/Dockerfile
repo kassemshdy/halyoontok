@@ -6,7 +6,7 @@ COPY backend/shared/ /app/shared/
 RUN pip install --no-cache-dir /app/shared
 
 COPY backend/admin-api/requirements.txt /app/requirements.txt
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt alembic
 
 COPY backend/admin-api/app/ /app/app/
 COPY backend/alembic/ /app/alembic/
