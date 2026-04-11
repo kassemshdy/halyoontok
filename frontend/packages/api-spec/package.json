@@ -1,0 +1,12 @@
+{
+  "name": "@halyoontok/api-spec",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "codegen": "orval",
+    "export-specs": "echo 'Run backend services first, then: curl http://localhost:8080/openapi.json > admin-api.json && curl http://localhost:8081/openapi.json > front-api.json && curl http://localhost:8082/openapi.json > upload-api.json'"
+  },
+  "devDependencies": {
+    "orval": "^7.3.0"
+  }
+}
