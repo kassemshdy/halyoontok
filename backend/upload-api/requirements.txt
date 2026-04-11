@@ -3,4 +3,3 @@ uvicorn[standard]>=0.34
 python-multipart>=0.0.20
 Pillow>=10.0
 aiofiles>=24.0
--e ../shared
