@@ -1,6 +1,4 @@
-"use client";
-
-import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from "react";
+import { createContext, useContext, useCallback, useEffect, useState, type ReactNode } from "react";
 
 interface User {
   id: number;
@@ -18,11 +16,8 @@ interface AuthContextType {
 }
 
 const AuthContext = createContext<AuthContextType>({
-  user: null,
-  token: null,
-  isLoading: true,
-  login: async () => {},
-  logout: () => {},
+  user: null, token: null, isLoading: true,
+  login: async () => {}, logout: () => {},
 });
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -35,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const savedUser = localStorage.getItem("admin_user");
     if (saved && savedUser) {
       setToken(saved);
-      setUser(JSON.parse(savedUser));
+      try { setUser(JSON.parse(savedUser)); } catch {}
     }
     setIsLoading(false);
   }, []);
@@ -52,8 +47,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
     const data = await res.json();
     const t = data.access_token;
-
-    // Decode JWT to get user info (payload is base64)
     const payload = JSON.parse(atob(t.split(".")[1]));
     const userObj: User = { id: parseInt(payload.sub), email, role: "admin", is_active: true };
 
@@ -82,6 +75,5 @@ export function useAuth() {
 }
 
 export function authHeaders(token: string | null): Record<string, string> {
-  if (!token) return {};
-  return { Authorization: `Bearer ${token}` };
+  return token ? { Authorization: `Bearer ${token}` } : {};
 }

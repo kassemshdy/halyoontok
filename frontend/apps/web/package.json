@@ -2,27 +2,31 @@
   "name": "@halyoontok/web",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "next dev --port 3001",
-    "build": "next build",
-    "start": "next start --port 3001",
-    "lint": "next lint"
+    "dev": "vite --port 3001",
+    "build": "vite build",
+    "preview": "vite preview --port 3001",
+    "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@halyoontok/shared-types": "workspace:*",
-    "@halyoontok/api-client": "workspace:*",
-    "@halyoontok/constants": "workspace:*",
     "@halyoontok/i18n": "workspace:*",
-    "next": "^15.0.0",
+    "@halyoontok/constants": "workspace:*",
+    "@tanstack/react-query": "^5.60.0",
+    "clsx": "^2.1.1",
     "react": "^18.3.0",
-    "react-dom": "^18.3.0"
+    "react-dom": "^18.3.0",
+    "tailwind-merge": "^2.6.0",
+    "wouter": "^3.3.0"
   },
   "devDependencies": {
-    "@types/node": "^22.0.0",
     "@types/react": "^18.3.0",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.0",
     "autoprefixer": "^10.4.0",
     "postcss": "^8.4.0",
     "tailwindcss": "^3.4.0",
-    "typescript": "^5.6.0"
+    "typescript": "^5.6.0",
+    "vite": "^6.0.0"
   }
 }
