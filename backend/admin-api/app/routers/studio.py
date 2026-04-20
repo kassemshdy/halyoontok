@@ -65,3 +65,22 @@ def convert_to_video(
 ) -> dict:
     video, idea = studio_service.convert_idea_to_video(session, idea_id)
     return {"video_id": video.id, "idea_id": idea.id}
+
+
+class GenerateFromIdeaRequest(BaseModel):
+    model_name: str = "nano_banana"
+    params: Optional[dict] = None
+
+
+@router.post("/ideas/{idea_id}/generate")
+def generate_from_idea(
+    idea_id: int,
+    body: GenerateFromIdeaRequest,
+    user: User = Depends(require_editor),
+    session: Session = Depends(get_session_dep),
+) -> dict:
+    from halyoontok.services.generation_service import generate_video_from_idea
+    job = generate_video_from_idea(session, idea_id, body.model_name, body.params)
+    from halyoontok.background.tasks.generation import run_generation_job
+    run_generation_job.delay(job.id)
+    return {"job_id": job.id, "idea_id": idea_id, "status": "queued"}

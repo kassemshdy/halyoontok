@@ -11,6 +11,10 @@ import { cn } from "@/lib/utils";
 
 const NAV_ITEMS: { href: string; labelKey: TranslationKey }[] = [
   { href: "/", labelKey: "nav.dashboard" },
+  { href: "/channels", labelKey: "nav.channels" },
+  { href: "/library", labelKey: "nav.library" },
+  { href: "/search", labelKey: "nav.search" },
+  { href: "/generation", labelKey: "nav.generation" },
   { href: "/content", labelKey: "nav.content" },
   { href: "/moderation", labelKey: "nav.moderation" },
   { href: "/studio", labelKey: "nav.studio" },

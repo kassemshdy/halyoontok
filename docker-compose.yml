@@ -74,6 +74,30 @@ services:
     volumes:
       - media_storage:/storage
 
+  celery-worker:
+    build:
+      context: ./backend
+      dockerfile: admin-api/Dockerfile
+    command: celery -A halyoontok.background.celery_app worker --loglevel=info
+    environment:
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+    depends_on:
+      - postgres
+      - redis
+
+  celery-beat:
+    build:
+      context: ./backend
+      dockerfile: admin-api/Dockerfile
+    command: celery -A halyoontok.background.celery_app beat --loglevel=info
+    environment:
+      POSTGRES_HOST: postgres
+      REDIS_HOST: redis
+    depends_on:
+      - postgres
+      - redis
+
 volumes:
   postgres_data:
   media_storage:
